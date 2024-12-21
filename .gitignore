@@ -1,0 +1,67 @@
+# Dependencies
+/backend/node_modules/
+/frontend/node_modules/
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/backend/.env
+/frontend/.env
+
+# Build outputs
+/frontend/build/
+/frontend/dist/
+/backend/dist/
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+
+# System files
+.DS_Store
+Thumbs.db
+*.pem
+
+# Testing
+/coverage
+/frontend/coverage
+/backend/coverage
+*.lcov
+
+# Vite specific
+*.local
+
+# React / Frontend specific
+.cache/
+.parcel-cache
+.next
+out
+dist
+build
+
+# Package manager locks (if you want to ignore them)
+yarn.lock
+/backend/yarn.lock
+/frontend/yarn.lock
+
+# Optional: Database files
+*.sqlite
+*.db
+
+# Optional: Production files
+.vercel
+.netlify
