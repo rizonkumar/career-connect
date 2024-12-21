@@ -65,3 +65,4 @@ yarn.lock
 # Optional: Production files
 .vercel
 .netlify
+/.idea/
