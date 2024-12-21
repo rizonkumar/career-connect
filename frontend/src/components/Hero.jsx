@@ -7,8 +7,22 @@ import {
   Users,
 } from "lucide-react";
 import { assets } from "../assets/assets";
+import { useContext, useRef } from "react";
+import { AppContext } from "../context/AppContext";
 
 const Hero = () => {
+  const { setSearchFilter, setIsSearch } = useContext(AppContext);
+  const titleRef = useRef(null);
+  const locationRef = useRef(null);
+
+  const handleSearch = () => {
+    setSearchFilter({
+      title: titleRef.current.value,
+      location: locationRef.current.value,
+    });
+    setIsSearch(true);
+  };
+
   const companyLogos = [
     {
       src: assets.microsoft_logo,
@@ -80,6 +94,7 @@ const Hero = () => {
                   placeholder="Search for jobs"
                   className="flex-1 bg-transparent text-base placeholder:text-gray-400 focus:outline-none"
                   type="text"
+                  ref={titleRef}
                 />
               </div>
 
@@ -89,10 +104,14 @@ const Hero = () => {
                   placeholder="Search for location"
                   className="flex-1 bg-transparent text-base placeholder:text-gray-400 focus:outline-none"
                   type="text"
+                  ref={locationRef}
                 />
               </div>
 
-              <button className="group flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-base font-semibold text-white transition-all hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2 lg:px-12">
+              <button
+                onClick={handleSearch}
+                className="group flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-base font-semibold text-white transition-all hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2 lg:px-12"
+              >
                 Search Jobs
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
