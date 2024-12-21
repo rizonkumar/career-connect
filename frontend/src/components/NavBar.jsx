@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { assets } from "../assets/assets";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { Menu, X, Briefcase } from "lucide-react";
 import { useState } from "react";
+import Logo from "./Logo";
 
 const NavBar = () => {
   const { openSignIn } = useClerk();
@@ -17,11 +17,7 @@ const NavBar = () => {
         <div className="relative flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img
-              src={assets.logo}
-              alt="CareerConnect"
-              className="h-8 w-auto md:h-10"
-            />
+            <Logo />
           </Link>
 
           {/* Mobile menu button */}
