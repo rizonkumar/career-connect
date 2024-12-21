@@ -1,3 +1,16 @@
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import ApplyJob from "./pages/ApplyJob";
+import Applications from "./pages/Applications";
+
 export default function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/apply-job/:id" element={<ApplyJob />} />
+        <Route path="/applications" element={<Applications />} />
+      </Routes>
+    </div>
+  );
 }
