@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#4F46E5"/>
+  
+  <path
+    d="M21 12H11C9.34315 12 8 13.3431 8 15V17C8 18.6569 9.34315 20 11 20H21C22.6569 20 24 18.6569 24 17V15C24 13.3431 22.6569 12 21 12Z"
+    fill="white"
+  />
+  
+  <path
+    d="M14 15L18 17L14 19"
+    stroke="#4F46E5"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+  
+  <circle cx="14" cy="15" r="1.5" fill="#4F46E5"/>
+  <circle cx="18" cy="17" r="1.5" fill="#4F46E5"/>
+  <circle cx="14" cy="19" r="1.5" fill="#4F46E5"/>
+</svg>
