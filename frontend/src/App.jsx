@@ -3,6 +3,9 @@ import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import ApplyJob from "./pages/ApplyJob";
 import Applications from "./pages/Applications";
+import Footer from "./components/Footer";
+import About from "./components/About";
+import Contact from "./components/Contact";
 
 export default function App() {
   return (
@@ -13,8 +16,11 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/apply-job/:id" element={<ApplyJob />} />
           <Route path="/applications" element={<Applications />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }
