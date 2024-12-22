@@ -13,18 +13,18 @@ const JobCard = ({ job }) => {
             className="h-full w-full object-contain"
           />
         </div>
-        <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600">
+        <span className="font-jakarta rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600">
           {job.level}
         </span>
       </div>
 
       {/* Job Title */}
-      <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900">
+      <h3 className="font-urbanist mb-2 line-clamp-1 text-lg font-semibold text-gray-900">
         {job.title}
       </h3>
 
       {/* Company & Location */}
-      <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
+      <div className="font-jakarta mb-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
         <div className="flex items-center gap-1.5">
           <Building2 className="h-4 w-4" />
           <span className="truncate">{job.companyId.name}</span>
@@ -37,16 +37,15 @@ const JobCard = ({ job }) => {
 
       {/* Description */}
       <div
-        className="mb-4 line-clamp-2 text-sm text-gray-600"
+        className="font-jakarta mb-4 line-clamp-2 text-sm text-gray-600"
         dangerouslySetInnerHTML={{
           __html: job.description.replace(/<[^>]*>/g, "").slice(0, 150) + "...",
         }}
       />
 
       {/* Salary */}
-
       {job.salary && (
-        <div className="mt-4 flex items-center gap-2 text-sm">
+        <div className="font-jakarta mt-4 flex items-center gap-2 text-sm">
           <span className="font-medium text-gray-700">Salary:</span>
           <span className="font-semibold text-green-600">
             ${job.salary.toLocaleString()}/year
@@ -55,7 +54,7 @@ const JobCard = ({ job }) => {
       )}
 
       {/* Action Buttons */}
-      <div className="mt-6 flex flex-col gap-3">
+      <div className="font-urbanist mt-6 flex flex-col gap-3">
         <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700">
           <BriefcaseIcon className="h-4 w-4" />
           Apply Now
