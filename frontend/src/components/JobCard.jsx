@@ -1,7 +1,10 @@
 import { MapPin, Building2, BriefcaseIcon, ArrowRight } from "lucide-react";
 import { assets } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 const JobCard = ({ job }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:shadow-lg">
       {/* Company Logo & Level Badge */}
@@ -55,11 +58,23 @@ const JobCard = ({ job }) => {
 
       {/* Action Buttons */}
       <div className="font-urbanist mt-6 flex flex-col gap-3">
-        <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700">
+        <button
+          onClick={() => {
+            navigate(`/apply-job/${job._id}`);
+            scrollTo(0, 0);
+          }}
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+        >
           <BriefcaseIcon className="h-4 w-4" />
           Apply Now
         </button>
-        <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-6 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+        <button
+          onClick={() => {
+            navigate(`/apply-job/${job._id}`);
+            scrollTo(0, 0);
+          }}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-6 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+        >
           Learn More
           <ArrowRight className="h-4 w-4" />
         </button>

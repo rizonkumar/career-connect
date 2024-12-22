@@ -6,6 +6,7 @@ import Applications from "./pages/Applications";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import Contact from "./components/Contact";
+import JobApplication from "./pages/JobApplication";
 
 export default function App() {
   return (
@@ -18,6 +19,10 @@ export default function App() {
           <Route path="/applications" element={<Applications />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route
+            path="/apply-job/:id/application"
+            element={<JobApplication />}
+          />
         </Routes>
       </main>
       <Footer />
