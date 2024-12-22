@@ -21,6 +21,14 @@ const ApplyJob = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { jobs } = useContext(AppContext);
 
+  const handleSimilarJobClick = (jobId) => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+    navigate(`/apply-job/${jobId}`);
+  };
+
   // Form state
   const [formData, setFormData] = useState({
     fullName: "",
@@ -261,25 +269,32 @@ const ApplyJob = () => {
                 Similar Jobs
               </h3>
               <div className="mt-4 space-y-4">
-                {[1, 2, 3].map((_, index) => (
-                  <div
-                    key={index}
-                    className="cursor-pointer rounded-xl border border-gray-100 p-4 transition-all hover:border-blue-100 hover:bg-blue-50/30 hover:shadow-md"
-                  >
-                    <h4 className="font-medium text-gray-900">
-                      Senior Frontend Developer
-                    </h4>
-                    <p className="mt-1 text-sm text-gray-600">
-                      Google • New York
-                    </p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <span className="text-sm font-medium text-blue-600">
-                        $120k - $150k
-                      </span>
-                      <span className="text-sm text-gray-500">• Full Time</span>
+                {jobs
+                  .filter(
+                    (j) => j._id !== id && j.category === jobData.category,
+                  )
+                  .slice(0, 3)
+                  .map((job) => (
+                    <div
+                      key={job._id}
+                      onClick={() => handleSimilarJobClick(job._id)}
+                      className="cursor-pointer rounded-xl border border-gray-100 p-4 transition-all hover:border-blue-100 hover:bg-blue-50/30 hover:shadow-md"
+                    >
+                      <h4 className="font-medium text-gray-900">{job.title}</h4>
+                      <p className="mt-1 text-sm text-gray-600">
+                        {job.companyId.name} • {job.location}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="text-sm font-medium text-blue-600">
+                          ${job.salary.toLocaleString()} - $
+                          {(job.salary * 1.2).toLocaleString()}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          • Full Time
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </div>
