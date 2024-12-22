@@ -1,6 +1,6 @@
-import { Briefcase } from "lucide-react";
+import { Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 import JobCard from "./JobCard";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import Loader from "./Loader";
 
@@ -13,6 +13,9 @@ const JobListing = () => {
     selectedLocations,
     isLoading,
   } = useContext(AppContext);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 6;
 
   // Filter jobs based on all criteria
   const filteredJobs = jobs.filter((job) => {
@@ -36,6 +39,12 @@ const JobListing = () => {
 
     return titleMatch && locationMatch && categoryMatch && locationFilterMatch;
   });
+
+  // Basic pagination calculations
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   if (isLoading) {
     return <Loader />;
@@ -64,11 +73,40 @@ const JobListing = () => {
       </div>
 
       {filteredJobs.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredJobs.map((job) => (
-            <JobCard key={job._id} job={job} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {currentJobs.map((job) => (
+              <JobCard key={job._id} job={job} />
+            ))}
+          </div>
+
+          {/* Simple Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <button
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </button>
+
+              <span className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <div className="flex h-60 flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200">
           <Briefcase className="h-12 w-12 text-gray-400" />
