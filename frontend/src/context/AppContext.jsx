@@ -8,12 +8,24 @@ export const AppContextProvider = (props) => {
     title: "",
     location: "",
   });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
   const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Funtions to fetch jobs
   const fetchJobs = async () => {
-    setJobs(jobsData);
+    setIsLoading(true);
+    try {
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setJobs(jobsData);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -27,6 +39,11 @@ export const AppContextProvider = (props) => {
     setIsSearch,
     jobs,
     setJobs,
+    selectedCategories,
+    setSelectedCategories,
+    selectedLocations,
+    setSelectedLocations,
+    isLoading,
   };
 
   return (

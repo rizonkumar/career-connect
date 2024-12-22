@@ -2,14 +2,20 @@ import { Briefcase } from "lucide-react";
 import JobCard from "./JobCard";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
+import Loader from "./Loader";
 
 const JobListing = () => {
-  const { jobs, searchFilter, isSearch } = useContext(AppContext);
+  const {
+    jobs,
+    searchFilter,
+    isSearch,
+    selectedCategories,
+    selectedLocations,
+    isLoading,
+  } = useContext(AppContext);
 
-  // Filter jobs based on search filter
+  // Filter jobs based on all criteria
   const filteredJobs = jobs.filter((job) => {
-    if (!isSearch) return true;
-
     const titleMatch = searchFilter.title
       ? job.title.toLowerCase().includes(searchFilter.title.toLowerCase())
       : true;
@@ -18,8 +24,22 @@ const JobListing = () => {
       ? job.location.toLowerCase().includes(searchFilter.location.toLowerCase())
       : true;
 
-    return titleMatch && locationMatch;
+    const categoryMatch =
+      selectedCategories.length === 0
+        ? true
+        : selectedCategories.includes(job.category);
+
+    const locationFilterMatch =
+      selectedLocations.length === 0
+        ? true
+        : selectedLocations.includes(job.location);
+
+    return titleMatch && locationMatch && categoryMatch && locationFilterMatch;
   });
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <section className="w-full space-y-6 lg:w-3/4">
@@ -27,12 +47,18 @@ const JobListing = () => {
         <div className="flex items-center gap-3">
           <Briefcase className="h-8 w-8 text-blue-600" />
           <h2 className="text-3xl font-bold text-gray-900">
-            {isSearch ? "Search Results" : "Featured Positions"}
+            {isSearch ||
+            selectedCategories.length > 0 ||
+            selectedLocations.length > 0
+              ? "Search Results"
+              : "Featured Positions"}
           </h2>
         </div>
         <p className="mt-4 text-lg text-gray-600">
-          {isSearch
-            ? `Found ${filteredJobs.length} jobs matching your search criteria`
+          {isSearch ||
+          selectedCategories.length > 0 ||
+          selectedLocations.length > 0
+            ? `Found ${filteredJobs.length} jobs matching your criteria`
             : "Discover your next career move with our curated list of opportunities from leading companies."}
         </p>
       </div>

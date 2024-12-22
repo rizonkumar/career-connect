@@ -5,14 +5,45 @@ import {
   Search,
   MapPin,
   Briefcase,
-  Building2,
   Filter,
   SlidersHorizontal,
 } from "lucide-react";
 import { JobCategories, JobLocations } from "../assets/assets";
 
 const Sidebar = () => {
-  const { isSearch, searchFilter, setSearchFilter } = useContext(AppContext);
+  const {
+    isSearch,
+    searchFilter,
+    setSearchFilter,
+    selectedCategories,
+    setSelectedCategories,
+    selectedLocations,
+    setSelectedLocations,
+  } = useContext(AppContext);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        return prev.filter((c) => c !== category);
+      }
+      return [...prev, category];
+    });
+  };
+
+  const handleLocationChange = (location) => {
+    setSelectedLocations((prev) => {
+      if (prev.includes(location)) {
+        return prev.filter((l) => l !== location);
+      }
+      return [...prev, location];
+    });
+  };
+
+  const clearFilters = () => {
+    setSearchFilter({ title: "", location: "" });
+    setSelectedCategories([]);
+    setSelectedLocations([]);
+  };
 
   return (
     <div className="h-fit w-full rounded-xl border border-gray-100 bg-white p-5 shadow-lg lg:sticky lg:top-20 lg:w-1/4">
@@ -82,7 +113,8 @@ const Sidebar = () => {
             >
               <input
                 type="checkbox"
-                id={`category-${index}`}
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCategoryChange(category)}
                 className="h-4 w-4 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <span className="text-sm font-medium text-gray-600 transition-colors group-hover:text-blue-600">
@@ -94,32 +126,30 @@ const Sidebar = () => {
       </div>
 
       {/* Locations Filter */}
-      <div className="py-4">
-        <h4 className="mb-3 flex items-center gap-2 text-lg font-semibold text-gray-900">
-          <Building2 className="h-5 w-5 text-blue-600" />
-          Locations
-        </h4>
-        <div className="space-y-2">
-          {JobLocations.map((location, index) => (
-            <label
-              key={index}
-              className="group flex cursor-pointer items-center gap-3 rounded-lg p-1 transition-colors hover:bg-gray-50"
-            >
-              <input
-                type="checkbox"
-                id={`location-${index}`}
-                className="h-4 w-4 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm font-medium text-gray-600 transition-colors group-hover:text-blue-600">
-                {location}
-              </span>
-            </label>
-          ))}
-        </div>
+      <div className="space-y-2">
+        {JobLocations.map((location, index) => (
+          <label
+            key={index}
+            className="group flex cursor-pointer items-center gap-3 rounded-lg p-1 transition-colors hover:bg-gray-50"
+          >
+            <input
+              type="checkbox"
+              checked={selectedLocations.includes(location)}
+              onChange={() => handleLocationChange(location)}
+              className="h-4 w-4 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-sm font-medium text-gray-600 transition-colors group-hover:text-blue-600">
+              {location}
+            </span>
+          </label>
+        ))}
       </div>
 
-      {/* Clear Filters Button */}
-      <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md">
+      {/* Clear Filters button */}
+      <button
+        onClick={clearFilters}
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md"
+      >
         <Filter className="h-4 w-4" />
         Clear All Filters
       </button>
