@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { Menu, X, Briefcase } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Logo from "./Logo";
+import { AppContext } from "../context/AppContext";
 
 const NavBar = () => {
   const { openSignIn } = useClerk();
   const { user } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { setShowRecruiterLogin } = useContext(AppContext);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -53,7 +55,10 @@ const NavBar = () => {
               </div>
             ) : (
               <div className="flex items-center gap-6">
-                <button className="text-gray-600 transition-colors hover:text-blue-600">
+                <button
+                  onClick={(e) => setShowRecruiterLogin(true)}
+                  className="text-gray-600 transition-colors hover:text-blue-600"
+                >
                   Recruiter Login
                 </button>
                 <button
@@ -89,7 +94,10 @@ const NavBar = () => {
                 </>
               ) : (
                 <>
-                  <button className="block w-full rounded-md px-3 py-2 text-left text-gray-600 hover:bg-gray-100">
+                  <button
+                    onClick={(e) => setShowRecruiterLogin(true)}
+                    className="block w-full rounded-md px-3 py-2 text-left text-gray-600 hover:bg-gray-100"
+                  >
                     Recruiter Login
                   </button>
                   <button
