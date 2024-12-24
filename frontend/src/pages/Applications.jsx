@@ -18,7 +18,6 @@ import {
   Briefcase,
 } from "lucide-react";
 import { jobsApplied } from "../assets/assets";
-import Footer from "../components/Footer";
 
 const Applications = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -267,7 +266,6 @@ const Applications = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
