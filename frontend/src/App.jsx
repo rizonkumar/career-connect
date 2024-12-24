@@ -9,14 +9,20 @@ import Footer from "./components/Footer";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import JobApplication from "./pages/JobApplication";
+import RecruiterLogin from "./components/RecruiterLogin";
+import { useContext } from "react";
+import { AppContext } from "./context/AppContext";
 
 export default function App() {
+  const { showRecruiterLogin } = useContext(AppContext);
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex min-h-screen flex-col">
         <NavBar />
         <main className="flex-1 pt-16">
+          {showRecruiterLogin && <RecruiterLogin />}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/apply-job/:id" element={<ApplyJob />} />
