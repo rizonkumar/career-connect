@@ -11,16 +11,20 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Building2,
   MapPin,
   Calendar,
   AlertCircle,
   Briefcase,
+  Search,
+  Filter,
 } from "lucide-react";
 import { jobsApplied } from "../assets/assets";
 
 const Applications = () => {
   const [isEdit, setIsEdit] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [sortOrder, setSortOrder] = useState("newest");
   const [resume, setResume] = useState({
     file: null,
     name: "resume.pdf",
@@ -114,6 +118,21 @@ const Applications = () => {
     }
   };
 
+  const filteredApplications = applications
+    .filter((app) => {
+      const matchesSearch =
+        app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.company.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "All" || app.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
+
   return (
     <div className="flex min-h-screen flex-col">
       <NavBar />
@@ -187,9 +206,9 @@ const Applications = () => {
             </div>
           </div>
 
-          {/* Applications Section */}
+          {/* Applications Table Section */}
           <div className="mb-8 rounded-2xl bg-white p-6 shadow-lg md:p-8">
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <Briefcase className="h-6 w-6 text-blue-600" />
                 <h2 className="font-urbanist text-2xl font-bold text-gray-900">
@@ -205,63 +224,131 @@ const Applications = () => {
               </button>
             </div>
 
-            {/* Applications Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {applications.map((application, index) => (
-                <div
-                  key={index}
-                  className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md"
+            {/* Filters and Search */}
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-1 items-center gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search applications..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="rounded-lg border border-gray-200 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
-                  <div className="mb-4 flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 overflow-hidden rounded-xl border border-gray-100 bg-white p-2">
-                        <img
-                          src={application.logo}
-                          alt={application.company}
-                          className="h-full w-full object-contain"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="line-clamp-1 font-urbanist text-lg font-semibold text-gray-900">
-                          {application.title}
-                        </h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Building2 className="h-4 w-4" />
-                          <span>{application.company}</span>
+                  <option value="All">All Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Accepted">Accepted</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="rounded-lg border border-gray-200 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
+
+            {/* Applications Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      Company
+                    </th>
+                    <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      Position
+                    </th>
+                    <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      Location
+                    </th>
+                    <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      Applied Date
+                    </th>
+                    <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      Status
+                    </th>
+                    <th className="whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredApplications.map((application, index) => (
+                    <tr
+                      key={index}
+                      className="border-b border-gray-200 hover:bg-gray-50"
+                    >
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 p-1">
+                            <img
+                              src={application.logo}
+                              alt={application.company}
+                              className="h-full w-full object-contain"
+                            />
+                          </div>
+                          <span className="font-medium text-gray-900">
+                            {application.company}
+                          </span>
                         </div>
-                      </div>
-                    </div>
-                  </div>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-gray-900">
+                        {application.title}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-gray-600">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-4 w-4" />
+                          {application.location}
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-gray-600">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-4 w-4" />
+                          {application.date}
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium ${getStatusColor(
+                            application.status,
+                          )}`}
+                        >
+                          {getStatusIcon(application.status)}
+                          {application.status}
+                        </span>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <button
+                          onClick={() => handleDeleteApplication(index)}
+                          className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-red-600"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-                  <div className="mb-4 space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <MapPin className="h-4 w-4" />
-                      <span>{application.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4" />
-                      <span>Applied on {application.date}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium ${getStatusColor(
-                        application.status,
-                      )}`}
-                    >
-                      {getStatusIcon(application.status)}
-                      {application.status}
-                    </span>
-                    <button
-                      onClick={() => handleDeleteApplication(index)}
-                      className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-red-600"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
+              {filteredApplications.length === 0 && (
+                <div className="flex h-48 items-center justify-center">
+                  <div className="text-center">
+                    <Filter className="mx-auto h-8 w-8 text-gray-400" />
+                    <p className="mt-2 text-gray-600">No applications found</p>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
