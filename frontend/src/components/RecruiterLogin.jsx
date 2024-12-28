@@ -1,5 +1,5 @@
 import { Mail, Users, LockKeyhole, X, Upload, ArrowLeft } from "lucide-react";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 
 const RecruiterLogin = () => {
@@ -39,10 +39,18 @@ const RecruiterLogin = () => {
     setShowForgotPassword(false);
   };
 
+  // Prevent scrolling on body when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   if (showForgotPassword) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-        <div className="animate-fadeIn w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+        <div className="w-full max-w-md animate-fadeIn rounded-2xl bg-white p-8 shadow-xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
               <h1 className="font-urbanist text-2xl font-bold text-gray-900">
@@ -93,7 +101,7 @@ const RecruiterLogin = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="animate-fadeIn w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+      <div className="w-full max-w-md animate-fadeIn rounded-2xl bg-white p-8 shadow-xl">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
