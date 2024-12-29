@@ -59,14 +59,18 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="md:col-span-1">
-            <h3 className="font-urbanist mb-4 text-lg font-semibold text-gray-900">
+            <h3 className="mb-4 font-urbanist text-lg font-semibold text-gray-900">
               Quick Links
             </h3>
             <ul className="space-y-2 text-gray-600">
               {["Home", "About", "Contact"].map((item) => (
                 <li key={item}>
                   <a
-                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    href={
+                      item === "Home"
+                        ? "/"
+                        : `/${item.toLowerCase().replace(" ", "-")}`
+                    }
                     className="transition-colors duration-200 hover:text-blue-600"
                   >
                     {item}
@@ -78,7 +82,7 @@ const Footer = () => {
 
           {/* Social Links */}
           <div className="md:col-span-1">
-            <h3 className="font-urbanist mb-4 text-lg font-semibold text-gray-900">
+            <h3 className="mb-4 font-urbanist text-lg font-semibold text-gray-900">
               Connect With Us
             </h3>
             <div className="flex flex-wrap gap-4">

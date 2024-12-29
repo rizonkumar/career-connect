@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { Menu, X, Briefcase } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Logo from "./Logo";
 import { AppContext } from "../context/AppContext";
 
@@ -12,6 +12,30 @@ const NavBar = () => {
   const { setShowRecruiterLogin } = useContext(AppContext);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleLoginClick = () => {
+    openSignIn();
+    setIsMenuOpen(false);
+  };
+
+  const handleRecruiterLoginClick = () => {
+    setShowRecruiterLogin(true);
+    setIsMenuOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMenuOpen && !event.target.closest(".menu-container")) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white shadow">
@@ -56,14 +80,14 @@ const NavBar = () => {
             ) : (
               <div className="flex items-center gap-6">
                 <button
-                  onClick={(e) => setShowRecruiterLogin(true)}
+                  onClick={handleRecruiterLoginClick}
                   className="text-gray-600 transition-colors hover:text-blue-600"
                 >
                   Recruiter Login
                 </button>
                 <button
                   className="rounded-full bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
-                  onClick={openSignIn}
+                  onClick={handleLoginClick}
                 >
                   Login
                 </button>
@@ -74,7 +98,9 @@ const NavBar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
+          <div className="menu-container md:hidden">
+            {" "}
+            {/* Add a class for easier targeting */}
             <div className="space-y-4 px-2 pb-4 pt-2">
               {user ? (
                 <>
@@ -95,14 +121,14 @@ const NavBar = () => {
               ) : (
                 <>
                   <button
-                    onClick={(e) => setShowRecruiterLogin(true)}
+                    onClick={handleRecruiterLoginClick}
                     className="block w-full rounded-md px-3 py-2 text-left text-gray-600 hover:bg-gray-100"
                   >
                     Recruiter Login
                   </button>
                   <button
                     className="block w-full rounded-md bg-blue-600 px-3 py-2 text-center text-white hover:bg-blue-700"
-                    onClick={openSignIn}
+                    onClick={handleLoginClick}
                   >
                     Login
                   </button>
