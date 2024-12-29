@@ -12,6 +12,9 @@ import JobApplication from "./pages/JobApplication";
 import RecruiterLogin from "./components/RecruiterLogin";
 import { useContext } from "react";
 import { AppContext } from "./context/AppContext";
+import Dashboard from "./pages/Dashboard";
+import AddJob from "./pages/AddJob";
+import ManageJobs from "./pages/ManageJobs";
 
 export default function App() {
   const { showRecruiterLogin } = useContext(AppContext);
@@ -33,6 +36,10 @@ export default function App() {
               path="/apply-job/:id/application"
               element={<JobApplication />}
             />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/add-job" element={<AddJob />} />
+            <Route path="/manage-jobs" element={<ManageJobs />} />
+            <Route path="/view-application/:id" element={<JobApplication />} />
           </Routes>
         </main>
         <Footer />
