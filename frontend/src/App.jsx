@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NavBar from "./components/NavBar";
@@ -15,10 +15,13 @@ import { AppContext } from "./context/AppContext";
 import Dashboard from "./pages/Dashboard";
 import AddJob from "./pages/AddJob";
 import ManageJobs from "./pages/ManageJobs";
+import ViewApplications from "./pages/ViewApplications";
 
 export default function App() {
   const { showRecruiterLogin } = useContext(AppContext);
+  const location = useLocation();
 
+  console.log("Location", location);
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
@@ -26,7 +29,7 @@ export default function App() {
         <NavBar />
         <main className="flex-1 pt-16">
           {showRecruiterLogin && <RecruiterLogin />}
-          <Routes>
+          <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/apply-job/:id" element={<ApplyJob />} />
             <Route path="/applications" element={<Applications />} />
@@ -36,10 +39,15 @@ export default function App() {
               path="/apply-job/:id/application"
               element={<JobApplication />}
             />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/add-job" element={<AddJob />} />
-            <Route path="/manage-jobs" element={<ManageJobs />} />
-            <Route path="/view-application/:id" element={<JobApplication />} />
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route path="manage-jobs" element={<ManageJobs />} />
+              <Route path="add-job" element={<AddJob />} />
+              <Route path="manage-jobs" element={<ManageJobs />} />
+              <Route
+                path="view-application/:id"
+                element={<ViewApplications />}
+              />
+            </Route>
           </Routes>
         </main>
         <Footer />
