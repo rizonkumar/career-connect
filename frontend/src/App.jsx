@@ -21,12 +21,13 @@ export default function App() {
   const { showRecruiterLogin } = useContext(AppContext);
   const location = useLocation();
 
-  console.log("Location", location);
+  const isDashboardRoute = location.pathname.includes("/dashboard");
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex min-h-screen flex-col">
-        <NavBar />
+        {!isDashboardRoute && <NavBar />}
         <main className="flex-1 pt-16">
           {showRecruiterLogin && <RecruiterLogin />}
           <Routes location={location}>
