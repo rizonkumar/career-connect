@@ -1,9 +1,5 @@
 const AddJob = () => {
-  return (
-    <div>
-      <p className="text-center">HRRRCCCDSSAAGTTTRRSSDVVDDDS</p>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default AddJob;
