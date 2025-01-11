@@ -45,10 +45,7 @@ export default function App() {
               <Route path="manage-jobs" element={<ManageJobs />} />
               <Route path="add-job" element={<AddJob />} />
               <Route path="manage-jobs" element={<ManageJobs />} />
-              <Route
-                path="view-applications/:id"
-                element={<ViewApplications />}
-              />
+              <Route path="view-applications" element={<ViewApplications />} />
             </Route>
           </Routes>
         </main>
