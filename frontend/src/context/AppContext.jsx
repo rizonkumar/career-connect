@@ -50,6 +50,7 @@ export const AppContextProvider = (props) => {
   };
 
   return (
+    // eslint-disable-next-line react/prop-types
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
   );
 };
