@@ -9,10 +9,17 @@ import {
   postNewJob,
   registerCompany,
 } from "../controllers/company.controller.js";
+import upload from "../config/multer.js";
+import { validateCompanyRegistration } from "../middleware/validators/company.validator.js";
 
 const router = express.Router();
 
-router.post("/register", registerCompany);
+router.post(
+  "/register",
+  upload.single("image"),
+  validateCompanyRegistration,
+  registerCompany
+);
 router.post("/login", loginCompany);
 router.get("/company-profile", getCompanyProfile);
 router.post("/post-new-job", postNewJob);

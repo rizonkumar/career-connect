@@ -1,7 +1,34 @@
-// Register a new company
-export const registerCompany = async (req, res) => {
+import { CompanyService } from "../services/company.service.js";
+import generateToken from "../utils/generateToken.js";
+
+const companyService = new CompanyService();
+
+// Register Company
+export const registerCompany = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const { name, email, password } = req.body;
+    const imageFile = req.file;
+
+    const company = await companyService.registerCompany(
+      name,
+      email,
+      password,
+      imageFile
+    );
+
+    res.status(201).json({
+      success: true,
+      company: {
+        _id: company._id,
+        name: company.name,
+        email: company.email,
+        image: company.image,
+      },
+      token: generateToken(company._id),
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Company login
