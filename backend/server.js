@@ -5,9 +5,13 @@ import "dotenv/config";
 import connectDB from "./config/db.js";
 import * as Sentry from "@sentry/node";
 import { clerkWebHooks } from "./controllers/webhooks.js";
+import companyRoutes from "./routes/company.routes.js";
+import connectCloudinary from "./config/cloudinary.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 await connectDB();
+await connectCloudinary();
 
 // Middlewares
 app.use(cors());
@@ -24,9 +28,13 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 
 app.post("/webhooks", clerkWebHooks);
 
-const PORT = process.env.PORT || 5000;
+app.use("/api/company", companyRoutes);
+
+const PORT = process.env.PORT || 5001;
 
 Sentry.setupExpressErrorHandler(app);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
