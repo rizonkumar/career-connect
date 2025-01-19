@@ -14,6 +14,7 @@ import {
   validateCompanyLogin,
   validateCompanyRegistration,
 } from "../middleware/validators/company.validator.js";
+import { protectCompany } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post(
   registerCompany
 );
 router.post("/login", validateCompanyLogin, loginCompany);
-router.get("/company-profile", getCompanyProfile);
+router.get("/company-profile", protectCompany, getCompanyProfile);
 router.post("/post-new-job", postNewJob);
 router.post("/applications", getJobApplicants);
 router.get("/posted-jobs", getCompanyPostedJobs);

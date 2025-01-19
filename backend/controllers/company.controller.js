@@ -52,9 +52,22 @@ export const loginCompany = async (req, res, next) => {
 };
 
 // Get company profile
-export const getCompanyProfile = async (req, res) => {
+export const getCompanyProfile = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const company = await companyService.getProfile(req.company._id);
+
+    res.status(200).json({
+      success: true,
+      company: {
+        _id: company._id,
+        name: company.name,
+        email: company.email,
+        image: company.image,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Post a new job
