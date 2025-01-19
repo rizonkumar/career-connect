@@ -30,26 +30,28 @@ export const postNewJob = async (req, res) => {
   }
 };
 
-// get company job applicants
-export const getJobApplicants = async (req, res) => {
+// get a single job by id
+export const getSingleJob = async (req, res) => {
   try {
+    const { id } = req.query;
+    const job = await jobService.getSingleJob(id);
+    if (!job) {
+      throw new AppError("Job not found", 404);
+    }
+    res
+      .status(200)
+      .json({ message: "Job retrieved successfully", success: true, job });
   } catch (error) {}
 };
 
-// get company posted jobs
-export const getCompanyPostedJobs = async (req, res) => {
+// get all jobs data
+export const getAllJobs = async (req, res) => {
   try {
-  } catch (error) {}
-};
-
-// change job application status
-export const changeJobApplicationStatus = async (req, res) => {
-  try {
-  } catch (error) {}
-};
-
-// change job visibility
-export const changeJobVisibility = async (req, res) => {
-  try {
-  } catch (error) {}
+    const jobs = await jobService.getJobs();
+    res
+      .status(200)
+      .json({ message: "All jobs retrieved successfully", sucess: true, jobs });
+  } catch (error) {
+    next(error);
+  }
 };

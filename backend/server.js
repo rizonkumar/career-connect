@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import * as Sentry from "@sentry/node";
 import { clerkWebHooks } from "./controllers/webhooks.js";
 import companyRoutes from "./routes/company.routes.js";
+import jobRoutes from "./routes/job.routes.js";
 import connectCloudinary from "./config/cloudinary.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -29,6 +30,8 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 app.post("/webhooks", clerkWebHooks);
 
 app.use("/api/company", companyRoutes);
+
+app.use("/api/jobs", jobRoutes);
 
 const PORT = process.env.PORT || 5001;
 
