@@ -45,8 +45,13 @@ export class CompanyService {
     return company;
   }
 
-  async getProfile() {
-    // Implementation
+  async getProfile(companyId) {
+    const company = await Company.findById(companyId).select("-password");
+
+    if (!company) {
+      throw new AppError("Company not found", 404);
+    }
+    return company;
   }
 
   async postJob() {
