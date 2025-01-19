@@ -10,7 +10,10 @@ import {
   registerCompany,
 } from "../controllers/company.controller.js";
 import upload from "../config/multer.js";
-import { validateCompanyRegistration } from "../middleware/validators/company.validator.js";
+import {
+  validateCompanyLogin,
+  validateCompanyRegistration,
+} from "../middleware/validators/company.validator.js";
 
 const router = express.Router();
 
@@ -20,7 +23,7 @@ router.post(
   validateCompanyRegistration,
   registerCompany
 );
-router.post("/login", loginCompany);
+router.post("/login", validateCompanyLogin, loginCompany);
 router.get("/company-profile", getCompanyProfile);
 router.post("/post-new-job", postNewJob);
 router.post("/applications", getJobApplicants);
