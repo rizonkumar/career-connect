@@ -17,4 +17,21 @@ export class JobService {
       throw new AppError("Error creating job posting", 500);
     }
   }
+
+  async getJobs() {
+    const jobs = await Job.find({ visible: true }).populate({
+      path: "companyId",
+      select: "-password",
+    });
+
+    return jobs;
+  }
+
+  async getSingleJob(id) {
+    const job = await Job.findById(id).populate({
+      path: "companyId",
+      select: "-password",
+    });
+    return job;
+  }
 }
