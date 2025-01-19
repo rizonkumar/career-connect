@@ -31,8 +31,18 @@ export class CompanyService {
     }
   }
 
-  async loginCompany() {
-    // Implementation
+  async loginCompany(email, password) {
+    const company = await Company.findOne({ email });
+    if (!company) {
+      throw new AppError("Invalid email or password", 401);
+    }
+    const isPasswordMatch = await bycrypt.compare(password, company.password);
+
+    if (!isPasswordMatch) {
+      throw new AppError("Invalid email or password", 401);
+    }
+
+    return company;
   }
 
   async getProfile() {

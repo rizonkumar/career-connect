@@ -19,3 +19,18 @@ export const validateCompanyRegistration = (req, res, next) => {
 
   next();
 };
+
+export const validateCompanyLogin = (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new AppError("Email and password are required", 400);
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    throw new AppError("Invalid email format", 400);
+  }
+  next();
+};

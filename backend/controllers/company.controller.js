@@ -32,9 +32,23 @@ export const registerCompany = async (req, res, next) => {
 };
 
 // Company login
-export const loginCompany = async (req, res) => {
+export const loginCompany = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const { email, password } = req.body;
+
+    const company = await companyService.loginCompany(email, password);
+    res.status(201).json({
+      company: {
+        _id: company._id,
+        name: company.name,
+        email: company.email,
+        image: company.image,
+      },
+      token: generateToken(company._id),
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Get company profile
