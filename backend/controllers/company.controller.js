@@ -69,3 +69,32 @@ export const getCompanyProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+// get company posted jobs
+export const getCompanyPostedJobs = async (req, res, next) => {
+  try {
+    const companyId = req.company._id;
+    const jobs = await companyService.getCompanyPostedJobs(companyId);
+    // TODO: Adding No of applicants info in data after creating apply for job api
+    res.status(200).json({
+      success: true,
+      jobsData: jobs,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changeJobVisibility = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    const companyId = req.company._id;
+    const job = await companyService.changeJobVisibility(id, companyId);
+    return res.status(200).json({
+      success: true,
+      job: job,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/post-new-job", protectCompany, postNewJob);
 
 // Route to get a single job data
-router.get("/", getSingleJob);
+router.get("/job/:id", getSingleJob);
 
 // Route to get all jobs data
 router.get("/", getAllJobs);
