@@ -33,7 +33,7 @@ export const postNewJob = async (req, res) => {
 // get a single job by id
 export const getSingleJob = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
     const job = await jobService.getSingleJob(id);
     if (!job) {
       throw new AppError("Job not found", 404);
@@ -41,7 +41,9 @@ export const getSingleJob = async (req, res) => {
     res
       .status(200)
       .json({ message: "Job retrieved successfully", success: true, job });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 // get all jobs data

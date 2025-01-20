@@ -2,6 +2,7 @@ import AppError from "../errors/AppError.js";
 import Company from "../models/company.model.js";
 import bycrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
+import Job from "../models/job.model.js";
 
 export class CompanyService {
   async registerCompany(name, email, password, imageFile) {
@@ -54,7 +55,19 @@ export class CompanyService {
     return company;
   }
 
-  async postJob() {
-    // Implementation
+  async getCompanyPostedJobs(companyId) {
+    const jobs = await Job.find({ companyId });
+    if (!jobs) {
+      throw new AppError("No jobs found for this company", 404);
+    }
+    return jobs;
+  }
+
+  async changeJobVisibility(id, companyId) {
+    const job = await Job.findById(id);
+    if (companyId.toString() === job.companyId.toString()) {
+      job.visible = !job.visible;
+    }
+    return await job.save();
   }
 }
