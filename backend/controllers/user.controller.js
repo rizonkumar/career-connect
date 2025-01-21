@@ -1,19 +1,13 @@
-import JobApplication from "../models/jobapplication.model.js";
-import User from "../models/user.model.js";
-import { v2 as cloudinary } from "cloudinary";
+import { UserService } from "../services/user.service.js";
 
-// Get User Data
+const userService = new UserService();
+
 export const getUserData = async (req, res, next) => {
-  const userId = req.auth.userId;
-
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found", success: false });
-    }
-    return res.status(200).json({
+    const userId = req.auth.userId;
+    const user = await userService.getUserProfile(userId);
+
+    res.status(200).json({
       message: "User data retrieved successfully",
       success: true,
       data: user,
@@ -23,37 +17,14 @@ export const getUserData = async (req, res, next) => {
   }
 };
 
-// Apply for Job
 export const applyForJob = async (req, res, next) => {
-  const { jobId } = req.body;
-  const userId = req.auth.userId;
-
   try {
-    const isAlreadyApplied = await JobApplication.findOne({
-      jobId,
-      userId,
-    });
+    const { jobId } = req.body;
+    const userId = req.auth.userId;
 
-    if (isAlreadyApplied.length > 0) {
-      return res.status(400).json({
-        message: "You have already applied for this job",
-        success: false,
-      });
-    }
+    await userService.applyForJob(userId, jobId);
 
-    const jobData = await Job.findById(jobId);
-    if (!jobData) {
-      return res.status(404).json({ message: "Job not found", success: false });
-    }
-
-    await JobApplication.create({
-      companyId: jobData.companyId,
-      userId,
-      jobId,
-      date: Date.now(),
-    });
-
-    return res.status(200).json({
+    res.status(200).json({
       message: "Job application submitted successfully",
       success: true,
     });
@@ -62,24 +33,12 @@ export const applyForJob = async (req, res, next) => {
   }
 };
 
-// Get User Applied Applications
 export const getUserAppliedApplications = async (req, res, next) => {
   try {
     const userId = req.auth.userId;
+    const applications = await userService.getUserApplications(userId);
 
-    const applications = await JobApplication.find({ userId })
-      .populate("companyId", "name email image")
-      .populate("jobId", "title description location category level salary")
-      .exec();
-
-    if (!applications) {
-      return res.status(404).json({
-        message: "No applications found",
-        success: false,
-      });
-    }
-
-    return res.status(200).json({
+    res.status(200).json({
       message: "User applied applications retrieved successfully",
       success: true,
       applications,
@@ -89,22 +48,14 @@ export const getUserAppliedApplications = async (req, res, next) => {
   }
 };
 
-// Update User Profile - Resume Only
 export const updateUserResume = async (req, res, next) => {
   try {
     const userId = req.auth.userId;
-    const resumeFile = req.resumeFile;
+    const resumeFile = req.file;
 
-    const userData = await User.findById(userId);
+    await userService.updateResume(userId, resumeFile);
 
-    if (resumeFile) {
-      const uploadResume = await cloudinary.uploader.upload(resumeFile.path);
-      userData.resume = uploadResume.secure_url;
-    }
-
-    await userData.save();
-
-    return res.status(200).json({
+    res.status(200).json({
       message: "User Resume updated successfully",
       success: true,
     });
