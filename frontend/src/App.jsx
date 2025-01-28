@@ -17,7 +17,7 @@ import AddJob from "./pages/AddJob";
 import ManageJobs from "./pages/ManageJobs";
 import ViewApplications from "./pages/ViewApplications";
 import "quill/dist/quill.snow.css";
-import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   const { showRecruiterLogin } = useContext(AppContext);
@@ -27,11 +27,11 @@ export default function App() {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex min-h-screen flex-col">
         {!isDashboardRoute && <NavBar />}
         <main className="flex-1 pt-16">
           {showRecruiterLogin && <RecruiterLogin />}
+          <ToastContainer position="top-right" autoClose={3000} />
           <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/apply-job/:id" element={<ApplyJob />} />

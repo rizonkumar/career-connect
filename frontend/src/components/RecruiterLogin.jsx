@@ -2,6 +2,7 @@ import { Mail, Users, LockKeyhole, X, Upload, ArrowLeft } from "lucide-react";
 import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RecruiterLogin = () => {
   const [state, setState] = useState("Login");
@@ -13,6 +14,8 @@ const RecruiterLogin = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     setShowRecruiterLogin,
@@ -40,8 +43,8 @@ const RecruiterLogin = () => {
           console.log("data", data);
           setCompanyToken(data.token);
           setCompanyData(data.company);
-
           setShowRecruiterLogin(false);
+          navigate("/dashboard");
         }
       } else if (state === "Register" && !isTextDataSubmitted) {
         setIsTextDataSubmitted(true);
