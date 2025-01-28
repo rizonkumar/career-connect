@@ -45,6 +45,7 @@ export const loginCompany = async (req, res, next) => {
         image: company.image,
       },
       token: generateToken(company._id),
+      success: true,
     });
   } catch (error) {
     next(error);

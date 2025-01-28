@@ -1,6 +1,7 @@
 import { Mail, Users, LockKeyhole, X, Upload, ArrowLeft } from "lucide-react";
 import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
+import axios from "axios";
 
 const RecruiterLogin = () => {
   const [state, setState] = useState("Login");
@@ -11,15 +12,63 @@ const RecruiterLogin = () => {
   const [image, setImage] = useState(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { setShowRecruiterLogin } = useContext(AppContext);
+  const {
+    setShowRecruiterLogin,
+    backendURL,
+    notify,
+    setCompanyToken,
+    setCompanyData,
+  } = useContext(AppContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (state === "Register" && !isTextDataSubmitted) {
-      setIsTextDataSubmitted(true);
-    } else {
-      console.log("Final submission", { name, email, password, image });
+    setIsLoading(true);
+    try {
+      if (state === "Login") {
+        const response = await axios.post(`${backendURL}/api/company/login`, {
+          email,
+          password,
+        });
+
+        const { data } = response;
+
+        if (data.success) {
+          localStorage.setItem("companyToken", data.token);
+          localStorage.setItem("companyData", JSON.stringify(data.company));
+          console.log("data", data);
+          setCompanyToken(data.token);
+          setCompanyData(data.company);
+
+          setShowRecruiterLogin(false);
+        }
+      } else if (state === "Register" && !isTextDataSubmitted) {
+        setIsTextDataSubmitted(true);
+      } else if (state === "Register" && isTextDataSubmitted && image) {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("image", image);
+
+        const response = await axios.post(
+          `${backendURL}/api/company/register`,
+          formData,
+        );
+
+        if (response.data.success) {
+          // Reset form and show success message
+          setState("Login");
+          setIsTextDataSubmitted(false);
+          notify("Login successful!");
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      notify("Login failed!", "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -250,13 +299,21 @@ const RecruiterLogin = () => {
           <div className="space-y-4 pt-4">
             <button
               type="submit"
-              className="flex w-full items-center justify-center rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white transition-all hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2"
+              disabled={isLoading}
+              className="flex w-full items-center justify-center rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white transition-all hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {state === "Login"
-                ? "Login"
-                : isTextDataSubmitted
-                  ? "Create Account"
-                  : "Next"}
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin">⌛</span>
+                  {state === "Login" ? "Logging in..." : "Creating account..."}
+                </span>
+              ) : state === "Login" ? (
+                "Login"
+              ) : isTextDataSubmitted ? (
+                "Create Account"
+              ) : (
+                "Next"
+              )}
             </button>
 
             <p className="text-center text-sm text-gray-600">

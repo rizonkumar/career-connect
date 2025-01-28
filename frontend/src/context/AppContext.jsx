@@ -1,9 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import { jobsData } from "../assets/assets";
+import { toast } from "react-toastify";
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
+  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const [searchFilter, setSearchFilter] = useState({
     title: "",
     location: "",
@@ -14,6 +16,15 @@ export const AppContextProvider = (props) => {
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showRecruiterLogin, setShowRecruiterLogin] = useState(false);
+  const [companyToken, setCompanyToken] = useState(null);
+  const [companyData, setCompanyData] = useState(null);
+
+  const notify = (message, type = "success") => {
+    toast[type](message, {
+      position: "top-right",
+      autoClose: 3000,
+    });
+  };
 
   // Funtions to fetch jobs
   const fetchJobs = async () => {
@@ -47,6 +58,12 @@ export const AppContextProvider = (props) => {
     isLoading,
     showRecruiterLogin,
     setShowRecruiterLogin,
+    companyToken,
+    setCompanyToken,
+    companyData,
+    setCompanyData,
+    backendURL,
+    notify,
   };
 
   return (
