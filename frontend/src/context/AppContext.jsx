@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { jobsData } from "../assets/assets";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export const AppContext = createContext();
 
@@ -30,8 +31,6 @@ export const AppContextProvider = (props) => {
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       setJobs(jobsData);
     } catch (error) {
       console.error("Error fetching jobs:", error);
@@ -40,9 +39,64 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  // Funtion to fetch company data
+  const fetchCompanyData = async () => {
+    try {
+      const { data } = await axios.get(
+        `${backendURL}/api/company/company-profile`,
+        {
+          headers: { Authorization: `Bearer ${companyToken}` },
+        },
+      );
+
+      console.log("Company Data", data);
+      if (data.success) {
+        setCompanyData(data.company);
+      } else {
+        notify(data.message, "error");
+      }
+    } catch (error) {
+      console.error("Error fetching company data:", error);
+      notify(
+        error.response?.data?.message || "Failed to fetch company data",
+        "error",
+      );
+
+      if (error.response?.status === 401) {
+        localStorage.removeItem("companyToken");
+        setCompanyToken(null);
+        setCompanyData(null);
+      }
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("companyToken");
+    localStorage.removeItem("companyData");
+    setCompanyToken(null);
+    setCompanyData(null);
+    notify("Logged out successfully");
+  };
+
   useEffect(() => {
     fetchJobs();
+    const storedCompanyToken = localStorage.getItem("companyToken");
+    if (storedCompanyToken) {
+      setCompanyToken(storedCompanyToken);
+    }
+
+    return () => {
+      // Cleanup on unmount
+      setCompanyData(null);
+      setCompanyToken(null);
+    };
   }, []);
+
+  useEffect(() => {
+    if (companyToken) {
+      fetchCompanyData();
+    }
+  }, [companyToken]);
 
   const value = {
     searchFilter,
@@ -64,6 +118,7 @@ export const AppContextProvider = (props) => {
     setCompanyData,
     backendURL,
     notify,
+    logout,
   };
 
   return (

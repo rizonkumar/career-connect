@@ -40,7 +40,7 @@ const RecruiterLogin = () => {
         if (data.success) {
           localStorage.setItem("companyToken", data.token);
           localStorage.setItem("companyData", JSON.stringify(data.company));
-          console.log("data", data);
+          notify("Login Sucessful!!");
           setCompanyToken(data.token);
           setCompanyData(data.company);
           setShowRecruiterLogin(false);
@@ -55,21 +55,22 @@ const RecruiterLogin = () => {
         formData.append("password", password);
         formData.append("image", image);
 
-        const response = await axios.post(
+        const { data } = await axios.post(
           `${backendURL}/api/company/register`,
           formData,
         );
 
-        if (response.data.success) {
-          // Reset form and show success message
-          setState("Login");
-          setIsTextDataSubmitted(false);
-          notify("Login successful!");
+        if (data.success) {
+          setShowRecruiterLogin(false);
+          notify("Registration successful!");
+          setCompanyData(data.company);
+          setCompanyToken(data.token);
+          navigate("/dashboard");
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      notify("Login failed!", "error");
+      notify(error.response?.data?.message || "Login failed!", "error");
     } finally {
       setIsLoading(false);
     }

@@ -20,7 +20,7 @@ import "quill/dist/quill.snow.css";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
-  const { showRecruiterLogin } = useContext(AppContext);
+  const { showRecruiterLogin, companyToken } = useContext(AppContext);
   const location = useLocation();
 
   const isDashboardRoute = location.pathname.includes("/dashboard");
@@ -43,10 +43,17 @@ export default function App() {
               element={<JobApplication />}
             />
             <Route path="/dashboard" element={<Dashboard />}>
-              <Route path="manage-jobs" element={<ManageJobs />} />
-              <Route path="add-job" element={<AddJob />} />
-              <Route path="manage-jobs" element={<ManageJobs />} />
-              <Route path="view-applications" element={<ViewApplications />} />
+              {companyToken ? (
+                <>
+                  <Route path="manage-jobs" element={<ManageJobs />} />
+                  <Route path="add-job" element={<AddJob />} />
+                  <Route path="manage-jobs" element={<ManageJobs />} />
+                  <Route
+                    path="view-applications"
+                    element={<ViewApplications />}
+                  />
+                </>
+              ) : null}
             </Route>
           </Routes>
         </main>
