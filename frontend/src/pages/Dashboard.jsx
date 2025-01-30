@@ -1,8 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { assets } from "../assets/assets";
 import Logo from "../components/Logo";
 import { UserButton, useClerk } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   LogOut,
   PlusCircle,
@@ -12,12 +11,14 @@ import {
   X,
   Building2,
 } from "lucide-react";
+import { AppContext } from "../context/AppContext";
 
 const Dashboard = () => {
   const [showLogout, setShowLogout] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { signOut } = useClerk();
+  const { companyData } = useContext(AppContext);
 
   const handleLogout = () => {
     signOut();
@@ -62,43 +63,40 @@ const Dashboard = () => {
                 <Logo />
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <p className="hidden text-gray-700 md:block">
-                Welcome to Recruiter Panel
-              </p>
-              <div className="hidden h-8 w-px bg-gray-200 md:block" />
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div
-                    className="h-8 w-8 cursor-pointer overflow-hidden rounded-lg border border-gray-200 transition-all hover:border-blue-500"
-                    onMouseEnter={() => setShowLogout(true)}
-                    onMouseLeave={() => setShowLogout(false)}
-                  >
-                    <img
-                      src={assets.company_icon}
-                      alt="Company Logo"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                  {showLogout && (
+            {companyData && (
+              <div className="flex items-center gap-6">
+                <p className="hidden text-gray-700 md:block">
+                  Welcome, {companyData.name}
+                </p>
+                <div className="hidden h-8 w-px bg-gray-200 md:block" />
+                <div className="flex items-center gap-4">
+                  <div className="relative">
                     <div
-                      className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-gray-200 bg-white p-2 shadow-lg"
-                      onMouseEnter={() => setShowLogout(true)}
-                      onMouseLeave={() => setShowLogout(false)}
+                      className="h-8 w-8 cursor-pointer overflow-hidden rounded-lg border border-gray-200 transition-all hover:border-blue-500"
+                      onClick={() => setShowLogout(!showLogout)}
                     >
-                      <button
-                        onClick={handleLogout}
-                        className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Logout
-                      </button>
+                      <img
+                        src={companyData.image}
+                        alt="Company Logo"
+                        className="h-full w-full object-contain"
+                      />
                     </div>
-                  )}
+                    {showLogout && (
+                      <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
+                        <button
+                          onClick={handleLogout}
+                          className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <UserButton afterSignOutUrl="/" />
                 </div>
-                <UserButton afterSignOutUrl="/" />
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -148,7 +146,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
                   <div className="h-8 w-8 overflow-hidden rounded-lg border border-gray-200">
                     <img
-                      src={assets.company_icon}
+                      src={companyData.image}
                       alt="Company Logo"
                       className="h-full w-full object-contain"
                     />
