@@ -70,7 +70,7 @@ const RecruiterLogin = () => {
       }
     } catch (error) {
       console.error("Error:", error);
-      notify("Login failed!", "error");
+      notify(error.response?.data?.message || "Login failed!", "error");
     } finally {
       setIsLoading(false);
     }
