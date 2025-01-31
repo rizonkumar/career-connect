@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import {
   Briefcase,
@@ -9,6 +9,8 @@ import {
   Send,
 } from "lucide-react";
 import { JobCategories, JobLocations } from "../assets/assets";
+import axios from "axios";
+import { AppContext } from "../context/AppContext";
 
 const AddJob = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +20,9 @@ const AddJob = () => {
     level: "Beginner Level",
     salary: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { backendURL, companyToken, notify } = useContext(AppContext);
 
   const editorRef = useRef(null);
   const quillRef = useRef(null);
@@ -62,14 +67,50 @@ const AddJob = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // /jobs/post-new-job
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const description = quillRef.current?.root.innerHTML;
-    const jobData = {
-      ...formData,
-      description,
-    };
-    console.log("Job Data:", jobData);
+    setIsLoading(true);
+    try {
+      const description = quillRef.current?.root.innerHTML;
+      const jobData = {
+        ...formData,
+        salary: Number(formData.salary),
+        description,
+        date: Date.now(),
+        visible: true,
+      };
+
+      if (!formData.title || !formData.salary || !description) {
+        notify("Please fill in all required fields", "error");
+        return;
+      }
+
+      const { data } = await axios.post(
+        `${backendURL}/api/jobs/post-new-job`,
+        jobData,
+        {
+          headers: { Authorization: `Bearer ${companyToken}` },
+        },
+      );
+
+      if (data.success) {
+        notify(data.message);
+        setFormData({
+          title: "",
+          location: JobLocations[0],
+          category: JobCategories[0],
+          level: "Beginner Level",
+          salary: "",
+        });
+        quillRef.current.root.innerHTML = "";
+      }
+    } catch (error) {
+      console.error(error);
+      notify(error.response?.data?.message || "Error creating job", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -215,8 +256,17 @@ const AddJob = () => {
             type="submit"
             className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 font-medium text-white transition-all hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <Send className="h-5 w-5" />
-            Post Job
+            {isLoading ? (
+              <>
+                <span className="animate-spin">⌛</span>
+                Posting...
+              </>
+            ) : (
+              <>
+                <Send className="h-5 w-5" />
+                Post Job
+              </>
+            )}
           </button>
         </div>
       </form>

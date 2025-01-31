@@ -66,7 +66,7 @@ const Dashboard = () => {
             {companyData && (
               <div className="flex items-center gap-6">
                 <p className="hidden text-gray-700 md:block">
-                  Welcome, {companyData.name}
+                  Welcome, {companyData?.name}
                 </p>
                 <div className="hidden h-8 w-px bg-gray-200 md:block" />
                 <div className="flex items-center gap-4">
@@ -76,7 +76,7 @@ const Dashboard = () => {
                       onClick={() => setShowLogout(!showLogout)}
                     >
                       <img
-                        src={companyData.image}
+                        src={companyData?.image}
                         alt="Company Logo"
                         className="h-full w-full object-contain"
                       />
@@ -146,7 +146,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
                   <div className="h-8 w-8 overflow-hidden rounded-lg border border-gray-200">
                     <img
-                      src={companyData.image}
+                      src={companyData?.image}
                       alt="Company Logo"
                       className="h-full w-full object-contain"
                     />

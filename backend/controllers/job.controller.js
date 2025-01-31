@@ -3,7 +3,7 @@ import { JobService } from "../services/job.service.js";
 const jobService = new JobService();
 
 // Post a new job
-export const postNewJob = async (req, res) => {
+export const postNewJob = async (req, res, next) => {
   try {
     const { title, description, location, category, level, salary } = req.body;
     const companyId = req.company._id;
@@ -31,7 +31,7 @@ export const postNewJob = async (req, res) => {
 };
 
 // get a single job by id
-export const getSingleJob = async (req, res) => {
+export const getSingleJob = async (req, res, next) => {
   try {
     const { id } = req.params;
     const job = await jobService.getSingleJob(id);
@@ -47,7 +47,7 @@ export const getSingleJob = async (req, res) => {
 };
 
 // get all jobs data
-export const getAllJobs = async (req, res) => {
+export const getAllJobs = async (req, res, next) => {
   try {
     const jobs = await jobService.getJobs();
     res

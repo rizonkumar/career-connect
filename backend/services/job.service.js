@@ -3,7 +3,6 @@ import Job from "../models/job.model.js";
 
 export class JobService {
   async postJob(jobData, companyId) {
-    console.log("Job Data from Service: ", jobData);
     try {
       const newJob = await Job.create({
         ...jobData,
