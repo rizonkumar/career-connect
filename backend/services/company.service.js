@@ -87,4 +87,26 @@ export class CompanyService {
     }
     return await job.save();
   }
+
+  async deleteJob(jobId, companyId) {
+    try {
+      const job = await Job.findById(jobId);
+
+      if (!job) {
+        throw new AppError("Job not found", 404);
+      }
+
+      if (job.companyId.toString() !== companyId.toString()) {
+        throw new AppError("Not authorized to delete this job", 403);
+      }
+
+      await JobApplication.deleteMany({ jobId });
+
+      await Job.findByIdAndDelete(jobId);
+
+      return true;
+    } catch (error) {
+      throw new AppError(error.message, error.statusCode || 500);
+    }
+  }
 }

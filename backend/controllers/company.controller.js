@@ -99,3 +99,19 @@ export const changeJobVisibility = async (req, res, next) => {
     next(error);
   }
 };
+
+// Delete a job
+export const deleteJob = async (req, res, next) => {
+  try {
+    const jobId = req.params.id;
+    const companyId = req.company._id;
+    await companyService.deleteJob(jobId, companyId);
+
+    res.status(200).json({
+      success: true,
+      message: "Job deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
