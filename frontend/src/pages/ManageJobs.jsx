@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -9,33 +9,95 @@ import {
   Trash2,
   Search,
   Plus,
-  SlidersHorizontal,
 } from "lucide-react";
-import { manageJobsData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+import Loader from "../components/Loader";
 
 const ManageJobs = () => {
-  const [jobs, setJobs] = useState(manageJobsData);
+  const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleVisibilityToggle = (jobId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job._id === jobId ? { ...job, visible: !job.visible } : job,
-      ),
-    );
+  const { backendURL, notify, companyToken } = useContext(AppContext);
+
+  const fetchCompanyJobs = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`${backendURL}/api/company/list-jobs`, {
+        headers: { Authorization: `Bearer ${companyToken}` },
+      });
+      if (data.success) {
+        setJobs(data.jobsData);
+      } else {
+        notify(data.message, "error");
+      }
+    } catch (error) {
+      notify(error.response?.data?.message || "Error fetching jobs", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDelete = (jobId) => {
+  const handleVisibilityToggle = async (jobId) => {
+    try {
+      const { data } = await axios.post(
+        `${backendURL}/api/company/change-visibility`,
+        { id: jobId },
+        {
+          headers: { Authorization: `Bearer ${companyToken}` },
+        },
+      );
+
+      if (data.success) {
+        setJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job._id === jobId ? { ...job, visible: !job.visible } : job,
+          ),
+        );
+        notify("Job visibility updated successfully");
+      }
+    } catch (error) {
+      notify(
+        error.response?.data?.message || "Error updating job visibility",
+        "error",
+      );
+    }
+  };
+
+  const handleDelete = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job posting?")) {
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      try {
+        const { data } = await axios.delete(
+          `${backendURL}/api/company/jobs/${jobId}`,
+          {
+            headers: { Authorization: `Bearer ${companyToken}` },
+          },
+        );
+
+        if (data.success) {
+          setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+          notify("Job deleted successfully");
+        }
+      } catch (error) {
+        notify(error.response?.data?.message || "Error deleting job", "error");
+      }
     }
   };
 
   const filteredJobs = jobs.filter((job) =>
     job.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  useEffect(() => {
+    if (companyToken) {
+      fetchCompanyJobs();
+    }
+  }, [companyToken]);
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="space-y-6">
@@ -65,10 +127,6 @@ const ManageJobs = () => {
             className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
-        <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50">
-          <SlidersHorizontal className="h-4 w-4" />
-          Filters
-        </button>
       </div>
 
       {/* Table Section */}
@@ -127,7 +185,7 @@ const ManageJobs = () => {
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1.5">
                       <Users className="h-4 w-4" />
-                      {job.applicants}
+                      {job.applicantsCount}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
@@ -148,7 +206,12 @@ const ManageJobs = () => {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50">
+                      <button
+                        onClick={() =>
+                          navigate(`/dashboard/edit-job/${job._id}`)
+                        }
+                        className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
+                      >
                         <PenSquare className="h-5 w-5" />
                       </button>
                       <button

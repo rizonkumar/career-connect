@@ -75,11 +75,11 @@ export const getCompanyProfile = async (req, res, next) => {
 export const getCompanyPostedJobs = async (req, res, next) => {
   try {
     const companyId = req.company._id;
-    const jobs = await companyService.getCompanyPostedJobs(companyId);
-    // TODO: Adding No of applicants info in data after creating apply for job api
+    const jobsData = await companyService.getCompanyPostedJobs(companyId);
+
     res.status(200).json({
       success: true,
-      jobsData: jobs,
+      jobsData: jobsData,
     });
   } catch (error) {
     next(error);
@@ -94,6 +94,22 @@ export const changeJobVisibility = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       job: job,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete a job
+export const deleteJob = async (req, res, next) => {
+  try {
+    const jobId = req.params.id;
+    const companyId = req.company._id;
+    await companyService.deleteJob(jobId, companyId);
+
+    res.status(200).json({
+      success: true,
+      message: "Job deleted successfully",
     });
   } catch (error) {
     next(error);
