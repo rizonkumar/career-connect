@@ -3,6 +3,7 @@ import Company from "../models/company.model.js";
 import bycrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import Job from "../models/job.model.js";
+import JobApplication from "../models/jobapplication.model.js";
 
 export class CompanyService {
   async registerCompany(name, email, password, imageFile) {
@@ -56,11 +57,27 @@ export class CompanyService {
   }
 
   async getCompanyPostedJobs(companyId) {
-    const jobs = await Job.find({ companyId });
-    if (!jobs) {
-      throw new AppError("No jobs found for this company", 404);
+    try {
+      const jobs = await Job.find({ companyId });
+      if (!jobs) {
+        throw new AppError("No jobs found for this company", 404);
+      }
+
+      const jobsWithApplicants = await Promise.all(
+        jobs.map(async (job) => {
+          const applications = await JobApplication.find({ jobId: job._id });
+
+          const jobObj = job.toObject();
+          jobObj.applicantsCount = applications.length;
+
+          return jobObj;
+        })
+      );
+
+      return jobsWithApplicants;
+    } catch (error) {
+      throw new AppError("Error fetching company jobs", 500);
     }
-    return jobs;
   }
 
   async changeJobVisibility(id, companyId) {

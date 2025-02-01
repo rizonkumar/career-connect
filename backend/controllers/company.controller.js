@@ -75,11 +75,11 @@ export const getCompanyProfile = async (req, res, next) => {
 export const getCompanyPostedJobs = async (req, res, next) => {
   try {
     const companyId = req.company._id;
-    const jobs = await companyService.getCompanyPostedJobs(companyId);
-    // TODO: Adding No of applicants info in data after creating apply for job api
+    const jobsData = await companyService.getCompanyPostedJobs(companyId);
+
     res.status(200).json({
       success: true,
-      jobsData: jobs,
+      jobsData: jobsData,
     });
   } catch (error) {
     next(error);
