@@ -18,10 +18,16 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { signOut } = useClerk();
-  const { companyData } = useContext(AppContext);
+  const { companyData, logout } = useContext(AppContext);
 
-  const handleLogout = () => {
-    signOut();
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const navLinks = [
