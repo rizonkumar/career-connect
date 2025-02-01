@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import { jobsData } from "../assets/assets";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -31,9 +30,19 @@ export const AppContextProvider = (props) => {
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
-      setJobs(jobsData);
+      const { data } = await axios.get(`${backendURL}/api/jobs`);
+
+      if (data.success) {
+        setJobs(data.jobs);
+      } else {
+        console.error("Failed to fetch jobs:", data.message);
+        notify("Failed to fetch jobs", "error");
+        setJobs([]);
+      }
     } catch (error) {
       console.error("Error fetching jobs:", error);
+      notify(error.response?.data?.message || "Failed to fetch jobs", "error");
+      setJobs([]);
     } finally {
       setIsLoading(false);
     }
