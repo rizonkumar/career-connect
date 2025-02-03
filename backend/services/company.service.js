@@ -109,4 +109,56 @@ export class CompanyService {
       throw new AppError(error.message, error.statusCode || 500);
     }
   }
+
+  async getJobById(jobId, companyId) {
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      throw new AppError("Job not found", 404);
+    }
+
+    if (job.companyId.toString() !== companyId.toString()) {
+      throw new AppError("Not authorized to access this job", 403);
+    }
+    return job;
+  }
+
+  async updateJob(jobId, companyId, updateData) {
+    try {
+      const job = await Job.findById(jobId);
+
+      if (!job) {
+        throw new AppError("Job not found", 404);
+      }
+
+      if (job.companyId.toString() !== companyId.toString()) {
+        throw new AppError("Not authorized to update this job", 403);
+      }
+
+      const allowedUpdates = [
+        "title",
+        "description",
+        "location",
+        "category",
+        "level",
+        "salary",
+      ];
+
+      const filteredUpdates = Object.keys(updateData)
+        .filter((key) => allowedUpdates.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = updateData[key];
+          return obj;
+        }, {});
+
+      const updatedJob = await Job.findByIdAndUpdate(jobId, filteredUpdates, {
+        new: true,
+        runValidators: true,
+      });
+
+      return updatedJob;
+    } catch (error) {
+      throw new AppError(error.message, error.statusCode || 500);
+    }
+  }
 }

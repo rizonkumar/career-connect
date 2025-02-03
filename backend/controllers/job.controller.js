@@ -50,9 +50,11 @@ export const getSingleJob = async (req, res, next) => {
 export const getAllJobs = async (req, res, next) => {
   try {
     const jobs = await jobService.getJobs();
-    res
-      .status(200)
-      .json({ message: "All jobs retrieved successfully", sucess: true, jobs });
+    res.status(200).json({
+      message: "All jobs retrieved successfully",
+      success: true,
+      jobs,
+    });
   } catch (error) {
     next(error);
   }

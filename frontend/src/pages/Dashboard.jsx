@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import { UserButton, useClerk } from "@clerk/clerk-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   LogOut,
   PlusCircle,
@@ -18,10 +18,16 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { signOut } = useClerk();
-  const { companyData } = useContext(AppContext);
+  const { companyData, logout } = useContext(AppContext);
 
-  const handleLogout = () => {
-    signOut();
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const navLinks = [
@@ -41,6 +47,12 @@ const Dashboard = () => {
       label: "View Applications",
     },
   ];
+
+  useEffect(() => {
+    if (companyData) {
+      navigate("/dashboard/manage-jobs");
+    }
+  }, [companyData]);
 
   return (
     <div className="min-h-screen bg-gray-50">

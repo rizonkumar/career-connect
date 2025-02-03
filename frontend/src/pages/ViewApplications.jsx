@@ -37,11 +37,13 @@ const ViewApplications = () => {
   }, []);
 
   const handleAccept = (id) => {
+    console.log("accepting application", id);
     toast.success("Application accepted successfully!");
     setShowActions(null);
   };
 
   const handleReject = (id) => {
+    console.log("rejecting application", id);
     toast.error("Application rejected!");
     setShowActions(null);
   };
