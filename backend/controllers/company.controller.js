@@ -115,3 +115,42 @@ export const deleteJob = async (req, res, next) => {
     next(error);
   }
 };
+
+// Get single job for editing
+export const getJobById = async (req, res, next) => {
+  try {
+    const jobId = req.params.id;
+    const companyId = req.company._id;
+    const job = await companyService.getJobById(jobId, companyId);
+
+    res.status(200).json({
+      success: true,
+      job,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update job
+export const updateJob = async (req, res, next) => {
+  try {
+    const jobId = req.params.id;
+    const companyId = req.company._id;
+    const updateData = req.body;
+
+    const updatedJob = await companyService.updateJob(
+      jobId,
+      companyId,
+      updateData
+    );
+
+    res.status(200).json({
+      success: true,
+      job: updatedJob,
+      message: "Job updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

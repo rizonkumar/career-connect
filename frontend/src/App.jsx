@@ -18,6 +18,7 @@ import ManageJobs from "./pages/ManageJobs";
 import ViewApplications from "./pages/ViewApplications";
 import "quill/dist/quill.snow.css";
 import "react-toastify/dist/ReactToastify.css";
+import EditJob from "./components/EditJob";
 
 export default function App() {
   const { showRecruiterLogin, companyToken } = useContext(AppContext);
@@ -48,6 +49,7 @@ export default function App() {
                   <Route path="manage-jobs" element={<ManageJobs />} />
                   <Route path="add-job" element={<AddJob />} />
                   <Route path="manage-jobs" element={<ManageJobs />} />
+                  <Route path="/dashboard/edit-job/:id" element={<EditJob />} />
                   <Route
                     path="view-applications"
                     element={<ViewApplications />}
