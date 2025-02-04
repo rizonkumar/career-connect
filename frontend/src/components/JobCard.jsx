@@ -2,7 +2,6 @@ import { MapPin, Building2, BriefcaseIcon, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const JobCard = ({ job }) => {
-  console.log(job);
   const navigate = useNavigate();
 
   const handleScrollToTop = () => {
